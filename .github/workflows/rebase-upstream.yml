@@ -11,11 +11,23 @@ jobs:
   sync:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
+      - name: Fast-forward main to upstream
+        uses: actions/checkout@v4
+        with:
+          ref: main
+          fetch-depth: 0
+      - name: Push main
+        run: |
+          git remote add upstream https://github.com/microsoft/playwright.git
+          git fetch upstream main
+          git push origin upstream/main:main --force-with-lease
+      - name: Checkout fix branch
+        uses: actions/checkout@v4
         with:
           fetch-depth: 10
           ref: fix/mcp-download-tab-snapshot-crash
-      - uses: imba-tjd/rebase-upstream-action@0.12
+      - name: Rebase fix branch onto upstream
+        uses: imba-tjd/rebase-upstream-action@0.12
         with:
           upstream: microsoft/playwright
           branch: main
