@@ -18,9 +18,8 @@ jobs:
           fetch-depth: 0
       - name: Push main
         run: |
-          git remote add upstream https://github.com/microsoft/playwright.git
-          git fetch upstream main
-          git push origin upstream/main:main --force-with-lease
+          git fetch https://github.com/microsoft/playwright.git main
+          git push origin FETCH_HEAD:main --force-with-lease
       - name: Checkout fix branch
         uses: actions/checkout@v4
         with:
