@@ -296,15 +296,15 @@ export class Tab extends EventEmitter<TabEventsInterface> {
   async headerSnapshot(): Promise<TabHeader & { changed: boolean }> {
     let title: string | undefined;
     let consoleCounts = { total: 0, errors: 0, warnings: 0 };
-    if (!this.crashed) {
+    if (!this.crashed && this.page) {
       await this._raceAgainstModalStates(async () => {
         title = await this.page.title();
-      });
-      consoleCounts = await this.consoleMessageCount();
+      }).catch(() => {});
+      consoleCounts = await this.consoleMessageCount().catch(() => ({ total: 0, errors: 0, warnings: 0 }));
     }
     const newHeader: TabHeader = {
       title: title ?? '',
-      url: this.page.url(),
+      url: this.page ? this.page.url() : 'about:blank',
       current: this.isCurrentTab(),
       crashed: this.crashed,
       mainDocumentStatus: this._mainDocumentStatus,
