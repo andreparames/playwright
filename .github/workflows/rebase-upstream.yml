@@ -1,0 +1,21 @@
+name: Rebase Upstream
+on:
+  schedule:
+    - cron: "0 0 * * 0"
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  sync:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 10
+          ref: fix/mcp-download-tab-snapshot-crash
+      - uses: imba-tjd/rebase-upstream-action@0.12
+        with:
+          upstream: microsoft/playwright
+          branch: main
